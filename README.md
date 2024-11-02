@@ -4,7 +4,6 @@
 [**Anthony Chen**](https://atchen.com/) · [**Haofan Wang**](https://haofanwang.github.io/)
 
 <a href='#'><img src='https://img.shields.io/badge/Technique-Report-red'></a>
-[![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Space-red)]
 
 </div>
 
@@ -16,34 +15,313 @@ Regional-Prompting-FLUX enables Diffusion Transformers (i.e., FLUX) with find-gr
 <img src='assets/demo_pipeline.png' width = 900 >
 </div>
 
+We inference at speed much faster than the RPG-based implementation, yet take up much less GPU memory.
+
+<p align="center">
+  <img src="assets/demo_speed.png" width = 400>
+</p>
+
 ## Release
-- [2024/04/03] 🔥 We release the [technical report](#).
+- [2024/04/03] 🔥 We release the code, feel free to try it out!
+- [2024/04/03] 🔥 We release the [technical report](#)!
 
 ## Demos
 
 ### Custom Regional Control
 
-<p align="center">
-  <img src="assets/demo_main.png">
-</p>
+<table align="center">
+  <tr>
+    <th>Regional Masks</th>
+    <th>Configuration</th>
+    <th>Generated Result</th>
+  </tr>
+  <tr>
+    <td width="20%">
+      <img src="assets/demo_custom_0_layout.png" width="100%">
+      <br>
+      <small><i>Red: Dog region (assets/demo_custom_0_mask_0.png)<br>Green: Cat region (assets/demo_custom_0_mask_1.png)<br>Blue: Background</i></small>
+    </td>
+    <td width="40%">
+      <b>Base Prompt:</b><br>
+      "dog and cat sitting on lush green grass, in a sunny outdoor setting."
+      <br><br>
+      <b>Regional Prompts:</b>
+      <ul>
+        <li><b>Region 0:</b> "A friendly golden retriever with a luxurious golden coat, floppy ears, and warm expression sitting on vibrant green grass."</li>
+        <li><b>Region 1:</b> "A silver british shorthair cat with round face, plush coat, and copper eyes sitting regally"</li>
+        <li><b>Background:</b> "A sunny outdoor setting with lush green grass."</li>
+      </ul>
+      <b>Settings:</b>
+      <ul>
+        <li>Image Size: 1280x768</li>
+        <li>Seed: 124</li>
+        <li>Mask Inject Steps: 10</li>
+        <li>Double Inject Interval: 1</li>
+        <li>Single Inject Interval: 2</li>
+        <li>Base Ratio: 0.1</li>
+      </ul>
+    </td>
+    <td width="40%">
+      <img src="assets/demo_custom_0.jpg" width="100%">
+    </td>
+  </tr>
+  <tr>
+    <td width="20%">
+      <img src="assets/demo_custom_1_layout.png" width="100%">
+      <br>
+      <small><i>Red: Cocktail region (xyxy: [450, 560, 960, 900])<br>Green: Table region (xyxy: [320, 900, 1280, 1280])<br>Blue: Background</i></small>
+    </td>
+    <td width="40%">
+      <b>Base Prompt:</b><br>
+      "A tropical cocktail on a wooden table at a beach during sunset."
+      <br><br>
+      <b>Background Prompt:</b><br>
+      "Beach with waves, white sand, and palm trees at sunset."
+      <br><br>
+      <b>Regional Prompts:</b>
+      <ul>
+        <li><b>Region 0:</b> "A colorful cocktail in a glass with tropical fruits and a paper umbrella, with ice cubes and condensation."</li>
+        <li><b>Region 1:</b> "Weathered wooden table with seashells and a napkin."</li>
+      </ul>
+      <b>Settings:</b>
+      <ul>
+        <li>Image Size: 1280x1280</li>
+        <li>Seed: 124</li>
+        <li>Mask Inject Steps: 10</li>
+        <li>Double Inject Interval: 1</li>
+        <li>Single Inject Interval: 2</li>
+        <li>Base Ratio: 0.1</li>
+      </ul>
+    </td>
+    <td width="40%">
+      <img src="assets/demo_custom_1.jpg" width="100%">
+    </td>
+  </tr>
+  <tr>
+    <td width="20%">
+      <img src="assets/demo_custom_2_layout.png" width="100%">
+      <br>
+      <small><i>Red: Rainbow region (xyxy: [0, 0, 1280, 256])<br>Green: Ship region (xyxy: [0, 256, 1280, 520])<br>Yellow: Fish region (xyxy: [0, 520, 640, 768])<br>Blue: Treasure region (xyxy: [640, 520, 1280, 768])</i></small>
+    </td>
+    <td width="40%">
+      <b>Base Prompt:</b><br>
+      "A majestic ship sails under a rainbow as vibrant marine creatures glide through crystal waters below, embodying nature's wonder, while an ancient, rusty treasure chest lies hidden on the ocean floor."
+      <br><br>
+      <b>Regional Prompts:</b>
+      <ul>
+        <li><b>Region 0:</b> "A massive, radiant rainbow arches across the vast sky, glowing in vivid colors and blending with ethereal clouds that drift gently, casting a magical light across the scene and creating a surreal, dreamlike atmosphere."</li>
+        <li><b>Region 1:</b> "The majestic ship, with grand sails billowing against the crystal blue waters, glides forward as birds soar overhead. Its hull and sails mirror the vivid hues of the sea, embodying a sense of adventure and mystery as it journeys through this enchanted world."</li>
+        <li><b>Region 2:</b> "Beneath the sparkling water, schools of colorful fish dart playfully, their scales flashing in shades of yellow, blue, and orange. Tiny seahorses drift by, while gentle turtles paddle along, creating a lively, enchanting underwater scene."</li>
+        <li><b>Region 3:</b> "On the ocean floor lies an ancient, rusty treasure chest, heavily encrusted with barnacles and seaweed. The chest's corroded metal and weathered wood hint at centuries spent underwater. Its lid is slightly ajar, revealing a faint glow within, as small fish dart around, adding an air of mystery to the forgotten relic."</li>
+      </ul>
+      <b>Settings:</b>
+      <ul>
+        <li>Image Size: 1280x768</li>
+        <li>Seed: 124</li>
+        <li>Mask Inject Steps: 10</li>
+        <li>Double Inject Interval: 1</li>
+        <li>Single Inject Interval: 1</li>
+        <li>Base Ratio: 0.2</li>
+      </ul>
+    </td>
+    <td width="40%">
+      <img src="assets/demo_custom_2.jpg" width="100%">
+    </td>
+  </tr>
+  <tr>
+    <td width="20%">
+      <img src="assets/demo_custom_3_layout.png" width="100%">
+      <br>
+      <small><i>Red: Woman with torch region (xyxy: [128, 128, 640, 768])</i></small>
+    </td>
+    <td width="40%">
+      <b>Base Prompt:</b><br>
+      "An ancient woman stands solemnly holding a blazing torch, while a fierce battle rages in the background, capturing both strength and tragedy in a historical war scene."
+      <br><br>
+      <b>Background Prompt:</b><br>
+      "A chaotic battlefield stretches behind her, filled with clashing armies, flying arrows, and the clash of ancient weapons. Soldiers with shields and spears engage in combat, their silhouettes dramatic against the smoky sky. Banners and standards wave in the wind, while dust and debris fill the air from the ongoing conflict."
+      <br><br>
+      <b>Regional Prompts:</b>
+      <ul>
+        <li><b>Region 0:</b> "A dignified woman in ancient robes stands in the foreground, her face illuminated by the torch she holds high. Her expression is one of determination and sorrow, her clothing and appearance reflecting the historical period. The torch casts dramatic shadows across her features, its flames dancing vibrantly against the darkness."</li>
+      </ul>
+      <b>Settings:</b>
+      <ul>
+        <li>Image Size: 1280x768</li>
+        <li>Seed: 124</li>
+        <li>Mask Inject Steps: 10</li>
+        <li>Double Inject Interval: 1</li>
+        <li>Single Inject Interval: 1</li>
+        <li>Base Ratio: 0.3</li>
+      </ul>
+    </td>
+    <td width="40%">
+      <img src="assets/demo_custom_3.jpg" width="100%">
+    </td>
+  </tr>
+</table>
 
 ### LoRA Compatability
 
-<p align="center">
-  <img src="assets/demo_lora.png">
-</p>
+<table>
+<table align="center">
+  <tr>
+    <th>Regional Masks</th>
+    <th>Configuration</th>
+    <th>Generated Result</th>
+  </tr>
+  <tr>
+    <td width="20%">
+      <img src="assets/demo_lora_0_layout.png" width="100%">
+      <br>
+      <small><i>Red: Dinosaur region (xyxy: [0, 0, 640, 1280])</i></small>
+      <small><i>Blue: City region (xyxy: [640, 0, 1280, 1280])</i></small>
+    </td>
+    <td width="40%">
+      <b>Base Prompt:</b><br>
+      "Sketched style: A cute dinosaur playfully blowing tiny fire puffs over a cartoon city in a cheerful scene."
+      <br><br>
+      <b>Regional Prompts:</b>
+      <ul>
+        <li><b>Region 0:</b> "Sketched style, dinosaur with round eyes and a mischievous smile, puffing small flames over the city."</li>
+        <li><b>Region 1:</b> "Sketched style, city with colorful buildings and tiny flames gently floating above, adding a playful touch."</li>
+      </ul>
+      <b>Settings:</b>
+      <ul>
+        <li>Image Size: 1280x1280</li>
+        <li>Seed: 1298</li>
+        <li>Mask Inject Steps: 10</li>
+        <li>Double Inject Interval: 1</li>
+        <li>Single Inject Interval: 1</li>
+        <li>Base Ratio: 0.1</li>
+      </ul>
+      <b>LoRA:</b>
+      <ul>
+        <li>Path: Shakker-Labs/FLUX.1-dev-LoRA-Children-Simple-Sketch</li>
+        <li>Scale: 1.5</li>
+        <li>Trigger Words: "sketched style"</li>
+      </ul>
+    </td>
+    <td width="40%">
+      <img src="assets/demo_lora_0.jpg" width="100%">
+    </td>
+  </tr>
+  <tr>
+    <td width="20%">
+      <img src="assets/demo_lora_2_layout.png" width="100%">
+      <br>
+      <small><i>Red: UFO region (xyxy: [320, 320, 640, 640])</i></small>
+    </td>
+    <td width="40%">
+      <b>Base Prompt:</b><br>
+      "A cute cartoon-style UFO floating above a sunny city street, artistic style blends reality and illustration elements"
+      <br><br>
+      <b>Background Prompt:</b><br>
+      "A sunny city street"
+      <br><br>
+      <b>Regional Prompts:</b>
+      <ul>
+        <li><b>Region 0:</b> "A cartoon-style silver UFO with blinking lights hovering in the air, artistic style blends reality and illustration elements"</li>
+      </ul>
+      <b>Settings:</b>
+      <ul>
+        <li>Image Size: 1280x1280</li>
+        <li>Seed: 1298</li>
+        <li>Mask Inject Steps: 10</li>
+        <li>Double Inject Interval: 1</li>
+        <li>Single Inject Interval: 2</li>
+        <li>Base Ratio: 0.2</li>
+      </ul>
+      <b>LoRA:</b>
+      <ul>
+        <li>Path: Shakker-Labs/FLUX.1-dev-LoRA-Vector-Journey</li>
+        <li>Scale: 1.0</li>
+        <li>Trigger Words: "artistic style blends reality and illustration elements"</li>
+      </ul>
+    </td>
+    <td width="40%">
+      <img src="assets/demo_lora_2.jpg" width="100%">
+    </td>
+  </tr>
+</table>
 
 ### ControlNet Compatability
 
-<p align="center">
-  <img src="assets/demo_controlnet.png">
-</p>
-
-### Highly Effective (with less inference time and GPU memory consumption)
-
-<p align="center">
-  <img src="assets/demo_speed.png">
-</p>
+<table align="center">
+  <tr>
+    <th>Regional Masks</th>
+    <th>Configuration</th>
+    <th>Generated Result</th>
+  </tr>
+  <tr>
+    <td width="20%">
+      <img src="assets/demo_controlnet_0_layout.png" width="100%">
+      <br>
+      <small><i>Red: First car region (xyxy: [0, 0, 426, 968])<br>
+      Green: Second car region (xyxy: [426, 0, 853, 968])<br>
+      Blue: Third car region (xyxy: [853, 0, 1280, 968])</i></small>
+      <br><br>
+      <img src="./assets/condition_depth.png" width="100%">
+    </td>
+    <td width="40%">
+      <b>Base Prompt:</b><br>
+      "Three high-performance sports cars, red, blue, and yellow, are racing side by side on a city street"
+      <br><br>
+      <b>Regional Prompts:</b>
+      <ul>
+        <li><b>Region 0:</b> "A sleek red sports car in the lead position, with aggressive aerodynamic styling and gleaming paint that catches the light. The car appears to be moving at high speed with motion blur effects."</li>
+        <li><b>Region 1:</b> "A powerful blue sports car in the middle position, neck-and-neck with its competitors. Its metallic paint shimmers as it races forward, with visible speed lines and dynamic movement."</li>
+        <li><b>Region 2:</b> "A striking yellow sports car in the third position, its bold color standing out against the street. The car's aggressive stance and aerodynamic profile emphasize its racing performance."</li>
+      </ul>
+      <b>Settings:</b>
+      <ul>
+        <li>Image Size: 1280x968</li>
+        <li>Seed: 124</li>
+        <li>Mask Inject Steps: 10</li>
+        <li>Double Inject Blocks Interval: 1</li>
+        <li>Single Inject Blocks Interval: 2</li>
+        <li>Base Ratio: 0.2</li>
+        <li>Control Mode: 2</li>
+      </ul>
+    </td>
+    <td width="40%">
+      <img src="assets/demo_controlnet_0.jpg" width="100%">
+    </td>
+  </tr>
+  <tr>
+    <td width="20%">
+      <img src="assets/demo_controlnet_1_layout.png" width="100%">
+      <br>
+      <small><i>Red: Woman region (xyxy: [0, 0, 640, 968])<br>
+      Green: Beach region (xyxy: [640, 0, 1280, 968])</i></small>
+      <br><br>
+      <img src="./assets/condition_pose.png" width="100%">
+    </td>
+    <td width="40%">
+      <b>Base Prompt:</b><br>
+      "A woman walking along a beautiful beach with a scenic coastal view."
+      <br><br>
+      <b>Regional Prompts:</b>
+      <ul>
+        <li><b>Region 0:</b> "A woman in a flowing summer dress with delicate pink and blue flower patterns walking barefoot on the sandy beach. Her floral-patterned dress billows gracefully in the ocean breeze as she strolls casually along the shoreline, with a peaceful expression on her face and her hair gently tousled by the wind."</li>
+        <li><b>Region 1:</b> "A stunning coastal landscape with crystal clear turquoise waters meeting the horizon. Rhythmic waves roll in with white foamy crests, creating a mesmerizing pattern as they crash onto the shore. The waves vary in size, some gently lapping at the sand while others surge forward with more force. White sandy beach stretches into the distance, with gentle waves leaving intricate patterns on the wet sand and scattered palm trees swaying in the breeze."</li>
+      </ul>
+      <b>Settings:</b>
+      <ul>
+        <li>Image Size: 1280x968</li>
+        <li>Seed: 124</li>
+        <li>Mask Inject Steps: 10</li>
+        <li>Double Inject Blocks Interval: 1</li>
+        <li>Single Inject Blocks Interval: 2</li>
+        <li>Base Ratio: 0.2</li>
+        <li>Control Mode: 4</li>
+      </ul>
+    </td>
+    <td width="40%">
+      <img src="assets/demo_controlnet_1.jpg" width="100%">
+    </td>
+  </tr>
+</table>
 
 ## Installation
 ```
@@ -63,10 +341,69 @@ git clone https://github.com/antonioo-c/Regional-Prompting-FLUX.git
 cp transformer_flux.py ../diffusers/src/diffusers/models/transformers/transformer_flux.py
 ```
 
-## Usage
+## Quick Start
+See detailed example (including LoRAs and ControlNets) in [infer_flux_regional.py](infer_flux_regional.py). Below is a quick start example.
 
-See detailed example in [infer_flux_regional.py](infer_flux_regional.py).
+```python
+import torch
+from pipeline_flux_regional import RegionalFluxPipeline, RegionalFluxAttnProcessor2_0
 
+pipeline = RegionalFluxPipeline.from_pretrained(model_path, torch_dtype=torch.bfloat16).to("cuda")
+attn_procs = {}
+for name in pipeline.transformer.attn_processors.keys():
+    if 'transformer_blocks' in name and name.endswith("attn.processor"):
+        attn_procs[name] = RegionalFluxAttnProcessor2_0()
+    else:
+        attn_procs[name] = pipeline.transformer.attn_processors[name]
+pipeline.transformer.set_attn_processor(attn_procs)
+
+image_width = 1280
+image_height = 768
+num_inference_steps = 24
+seed = 124
+base_prompt = "An ancient woman stands solemnly holding a blazing torch, while a fierce battle rages in the background, capturing both strength and tragedy in a historical war scene."
+background_prompt = "a photo"
+regional_prompt_mask_pairs = {
+    "0": {
+        "description": "A dignified woman in ancient robes stands in the foreground, her face illuminated by the torch she holds high. Her expression is one of determination and sorrow, her clothing and appearance reflecting the historical period. The torch casts dramatic shadows across her features, its flames dancing vibrantly against the darkness.",
+        "mask": [128, 128, 640, 768]
+    }
+}
+# region control settings
+mask_inject_steps = 10
+double_inject_blocks_interval = 1
+single_inject_blocks_interval = 1
+base_ratio = 0.3
+
+regional_prompts = []
+regional_masks = []
+background_mask = torch.ones((image_height, image_width))
+for region_idx, region in regional_prompt_mask_pairs.items():
+    description = region['description']
+    mask = region['mask']
+    x1, y1, x2, y2 = mask
+    mask = torch.zeros((image_height, image_width))
+    mask[y1:y2, x1:x2] = 1.0
+    background_mask -= mask
+    regional_prompts.append(description)
+    regional_masks.append(mask)
+# if regional masks don't cover the whole image, append background prompt and mask
+if background_mask.sum() > 0:
+    regional_prompts.append(background_prompt)
+    regional_masks.append(background_mask)
+
+image = pipeline(
+    prompt=base_prompt,
+    width=image_width, height=image_height,
+    mask_inject_steps=mask_inject_steps,
+    num_inference_steps=num_inference_steps,
+    generator=torch.Generator("cuda").manual_seed(seed),
+    joint_attention_kwargs=joint_attention_kwargs,
+  ).images[0]
+
+image.save(f"output.jpg")
+
+```
 
 ## Cite
 If you find Regional-Prompting-FLUX useful for your research and applications, please cite us using this BibTeX:

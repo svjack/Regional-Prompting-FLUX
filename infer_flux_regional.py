@@ -10,12 +10,11 @@ from diffusers import FluxControlNetModel, FluxMultiControlNetModel
 if __name__ == "__main__":
     
     model_path = "black-forest-labs/FLUX.1-dev"
-    pipeline = RegionalFluxPipeline.from_pretrained(model_path, torch_dtype=torch.bfloat16).to("cuda")
     
-    use_lora = False
+    use_lora = True
     use_controlnet = False
 
-    if use_controlnet:
+    if use_controlnet: # takes up more gpu memory
         # READ https://huggingface.co/Shakker-Labs/FLUX.1-dev-ControlNet-Union-Pro for detailed usage tutorial
         controlnet_model_union = 'Shakker-Labs/FLUX.1-dev-ControlNet-Union-Pro'
         controlnet_union = FluxControlNetModel.from_pretrained(controlnet_model_union, torch_dtype=torch.bfloat16)
@@ -37,44 +36,35 @@ if __name__ == "__main__":
     pipeline.transformer.set_attn_processor(attn_procs)
 
     ## generation settings
-    image_width = 1280
-    image_height = 968
-    num_samples = 1
-    num_inference_steps = 24
-    guidance_scale = 3.5
-    seed = 124
-
-    # controlnet settings
-    if use_controlnet:
-        control_image = [Image.open("control-depth.png")]
-        control_mode = [2] # (2) stands for depth control
-        controlnet_conditioning_scale = [0.7]
     
-    # lora settings
-    if use_lora:
-        pipeline.fuse_lora(lora_scale=0.8) # recommended 0.8~1.0, trigger words: [Sketch-style]
-
-    ## regional settings
-
     # example regional prompt and mask pairs
-    base_prompt = "A striking scene of a woman with vibrant red hair stepping out of a sleek black sports car, surrounded by city lights and urban ambiance."
-    background_prompt = "city lights" # needed if regional masks don't cover the whole image
-    regional_prompt_mask_pairs = {
-        "0": {
-            "description": "The woman is wearing a black elegant dress, her vivid red hair cascades down, catching the city lights and contrasting against the sleek, polished black surface of the sports car.",
-            "mask": [640, 0, 1280, 768]
-        },
-        "1": {
-            "description": "The glossy black sports car reflects the surrounding lights and shadows, highlighting its aerodynamic curves and bold, modern design.",
-            "mask": [0, 0, 640, 768]
-        }
-    }
-    mask_inject_steps = 10
-    double_inject_blocks = 18
-    single_inject_blocks = 39
-    base_ratio = 0.2
+    # image_width = 1280
+    # image_height = 768
+    # num_samples = 1
+    # num_inference_steps = 24
+    # guidance_scale = 3.5
+    # seed = 124
+    # base_prompt = "An ancient woman stands solemnly holding a blazing torch, while a fierce battle rages in the background, capturing both strength and tragedy in a historical war scene."
+    # background_prompt = "a photo"
+    # regional_prompt_mask_pairs = {
+    #     "0": {
+    #         "description": "A dignified woman in ancient robes stands in the foreground, her face illuminated by the torch she holds high. Her expression is one of determination and sorrow, her clothing and appearance reflecting the historical period. The torch casts dramatic shadows across her features, its flames dancing vibrantly against the darkness.",
+    #         "mask": [128, 128, 640, 768]
+    #     }
+    # }
+    ## region control settings
+    # mask_inject_steps = 10
+    # double_inject_blocks_interval = 1
+    # single_inject_blocks_interval = 1
+    # base_ratio = 0.3
 
     # example input with controlnet enabled
+    # image_width = 1280
+    # image_height = 968
+    # num_samples = 1
+    # num_inference_steps = 24
+    # guidance_scale = 3.5
+    # seed = 124
     # base_prompt = "Three high-performance sports cars, red, blue, and yellow, are racing side by side on a city street"
     # background_prompt = "city street" # needed if regional masks don't cover the whole image
     # regional_prompt_mask_pairs = {
@@ -91,28 +81,46 @@ if __name__ == "__main__":
     #             "mask": [853, 0, 1280, 968]
     #         }
     # }
+
+    # ## controlnet settings
+    # if use_controlnet:
+    #     control_image = [Image.open("./assets/condition_depth.png")]
+    #     control_mode = [2] # (2) stands for depth control
+    #     controlnet_conditioning_scale = [0.7]
+    ## region control settings
     # mask_inject_steps = 10
-    # double_inject_blocks = 18
-    # single_inject_blocks = 20
-    # base_ratio = 0.3
+    # double_inject_blocks_interval = 1 # 1 for full blocks
+    # single_inject_blocks_interval = 2 # 1 for full blocks
+    # base_ratio = 0.2
+
 
     # example input with lora enabled
-    # base_prompt = "Sketched style: A cute dinosaur playfully blowing tiny fire puffs over a cartoon city in a cheerful scene."
-    # background_prompt = "white background"
-    # regional_prompt_mask_pairs = {
-    #     "0": {
-    #         "description": "Sketched style: dinosaur with round eyes and a mischievous smile, puffing small flames over the city.",
-    #         "mask": [0, 0, 640, 1280]
-    #     },
-    #     "1": {
-    #         "description": "Sketched style: city with colorful buildings and tiny flames gently floating above, adding a playful touch.", 
-    #         "mask": [640, 0, 1280, 1280]
-    #     }
-    # }
-    # mask_inject_steps = 10
-    # double_inject_blocks = 18
-    # single_inject_blocks = 39
-    # base_ratio = 0.2
+    image_width = 1280
+    image_height = 1280
+    num_samples = 1
+    num_inference_steps = 24
+    guidance_scale = 3.5
+    seed = 124
+    base_prompt = "Sketched style: A cute dinosaur playfully blowing tiny fire puffs over a cartoon city in a cheerful scene."
+    background_prompt = "white background"
+    regional_prompt_mask_pairs = {
+        "0": {
+            "description": "Sketched style: dinosaur with round eyes and a mischievous smile, puffing small flames over the city.",
+            "mask": [0, 0, 640, 1280]
+        },
+        "1": {
+            "description": "Sketched style: city with colorful buildings and tiny flames gently floating above, adding a playful touch.", 
+            "mask": [640, 0, 1280, 1280]
+        }
+    }
+    ## lora settings
+    if use_lora:
+        pipeline.fuse_lora(lora_scale=1.5)
+    ## region control settings
+    mask_inject_steps = 10
+    double_inject_blocks_interval = 1 # 18 for full blocks
+    single_inject_blocks_interval = 1 # 39 for full blocks
+    base_ratio = 0.1
 
     ## prepare regional prompts and masks
     # ensure image width and height are divisible by the vae scale factor
@@ -122,10 +130,12 @@ if __name__ == "__main__":
     regional_prompts = []
     regional_masks = []
     background_mask = torch.ones((image_height, image_width))
-    for _, region in regional_prompt_mask_pairs.items():
+
+    for region_idx, region in regional_prompt_mask_pairs.items():
         description = region['description']
         mask = region['mask']
         x1, y1, x2, y2 = mask
+
         mask = torch.zeros((image_height, image_width))
         mask[y1:y2, x1:x2] = 1.0
 
@@ -138,13 +148,13 @@ if __name__ == "__main__":
     if background_mask.sum() > 0:
         regional_prompts.append(background_prompt)
         regional_masks.append(background_mask)
-    
+
     # setup regional kwargs that pass to the pipeline
     joint_attention_kwargs = {
         'regional_prompts': regional_prompts,
         'regional_masks': regional_masks,
-        'double_inject_blocks': double_inject_blocks,
-        'single_inject_blocks': single_inject_blocks,
+        'double_inject_blocks_interval': double_inject_blocks_interval,
+        'single_inject_blocks_interval': single_inject_blocks_interval,
         'base_ratio': base_ratio,
     }
     # generate images

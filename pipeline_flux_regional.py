@@ -144,6 +144,8 @@ def retrieve_timesteps(
     return timesteps, num_inference_steps
 
 class RegionalFluxAttnProcessor2_0:
+    def __init__(self):  
+        self.regional_mask = None
     def FluxAttnProcessor2_0_call(
         self,
         attn,
@@ -255,11 +257,21 @@ class RegionalFluxAttnProcessor2_0:
             else:
                 hidden_states_base = attn_output_base
 
+        # move regional mask to device
+        if base_ratio is not None and 'regional_attention_mask' in additional_kwargs:
+            if self.regional_mask is not None:
+                regional_mask = self.regional_mask.to(hidden_states.device)
+            else:
+                self.regional_mask = additional_kwargs['regional_attention_mask']
+                regional_mask = self.regional_mask.to(hidden_states.device)
+        else:
+            regional_mask = None
+
         attn_output = self.FluxAttnProcessor2_0_call(
             attn=attn,
             hidden_states=hidden_states,
             encoder_hidden_states=encoder_hidden_states,
-            attention_mask=additional_kwargs['regional_attention_mask'].to(hidden_states.device) if base_ratio is not None and 'regional_attention_mask' in additional_kwargs else None,
+            attention_mask=regional_mask,
             image_rotary_emb=image_rotary_emb,
         )
 
@@ -501,8 +513,8 @@ class RegionalFluxPipeline(FluxPipeline):
                     txt_ids=text_ids,
                     img_ids=latent_image_ids,
                     joint_attention_kwargs={
-                        'single_inject_blocks': joint_attention_kwargs['single_inject_blocks'] if 'single_inject_blocks' in joint_attention_kwargs else len(self.transformer.single_transformer_blocks), 
-                        'double_inject_blocks': joint_attention_kwargs['double_inject_blocks'] if 'double_inject_blocks' in joint_attention_kwargs else len(self.transformer.transformer_blocks),
+                        'single_inject_blocks_interval': joint_attention_kwargs['single_inject_blocks_interval'] if 'single_inject_blocks_interval' in joint_attention_kwargs else len(self.transformer.single_transformer_blocks), 
+                        'double_inject_blocks_interval': joint_attention_kwargs['double_inject_blocks_interval'] if 'double_inject_blocks_interval' in joint_attention_kwargs else len(self.transformer.transformer_blocks),
                         'regional_attention_mask': regional_attention_mask if base_ratio is not None else None,
                     },
                     return_dict=False,

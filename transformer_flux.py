@@ -594,7 +594,7 @@ class FluxTransformer2DModel(ModelMixin, ConfigMixin, PeftAdapterMixin, FromOrig
                     temb=temb,
                     image_rotary_emb=image_rotary_emb,
                     image_rotary_emb_base=image_rotary_emb_base,
-                    additional_kwargs=additional_kwargs if index_block < joint_attention_kwargs['double_inject_blocks'] else {k: v for k, v in additional_kwargs.items() if k != 'regional_attention_mask'}, # delete attention mask to avoid region control
+                    additional_kwargs=additional_kwargs if index_block % joint_attention_kwargs['double_inject_blocks_interval'] == 0 else {k: v for k, v in additional_kwargs.items() if k != 'regional_attention_mask'}, # delete attention mask to avoid region control
                 )
 
             # controlnet residual
@@ -639,7 +639,7 @@ class FluxTransformer2DModel(ModelMixin, ConfigMixin, PeftAdapterMixin, FromOrig
                     temb=temb,
                     image_rotary_emb=image_rotary_emb,
                     image_rotary_emb_base=image_rotary_emb_base,
-                    additional_kwargs=additional_kwargs if index_block < joint_attention_kwargs['single_inject_blocks'] else {k: v for k, v in additional_kwargs.items() if k != 'regional_attention_mask'}, # delete attention mask to avoid region control
+                    additional_kwargs=additional_kwargs if index_block % joint_attention_kwargs['single_inject_blocks_interval'] == 0 else {k: v for k, v in additional_kwargs.items() if k != 'regional_attention_mask'}, # delete attention mask to avoid region control
                 )
 
             # controlnet residual

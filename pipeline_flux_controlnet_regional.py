@@ -17,13 +17,8 @@ from typing import Any, Callable, Dict, List, Optional, Union
 
 import numpy as np
 import torch
-from transformers import CLIPTextModel, CLIPTokenizer, T5EncoderModel, T5TokenizerFast
 
-from diffusers.image_processor import PipelineImageInput, VaeImageProcessor
-from diffusers.loaders import FluxLoraLoaderMixin
-from diffusers.models.autoencoders import AutoencoderKL
-from diffusers.models.transformers import FluxTransformer2DModel
-from diffusers.schedulers import FlowMatchEulerDiscreteScheduler
+from diffusers.image_processor import PipelineImageInput
 from diffusers.utils import (
     USE_PEFT_BACKEND,
     is_torch_xla_available,
@@ -32,17 +27,9 @@ from diffusers.utils import (
     scale_lora_layers,
     unscale_lora_layers,
 )
-from diffusers.utils.torch_utils import randn_tensor
 from diffusers.pipelines.flux.pipeline_output import FluxPipelineOutput
-from diffusers.pipelines.flux.pipeline_flux import FluxPipeline
 from diffusers.models.controlnet_flux import FluxControlNetModel, FluxMultiControlNetModel
 from diffusers.pipelines.flux.pipeline_flux_controlnet import *
-
-
-import copy
-from tqdm.auto import trange
-import random
-from PIL import Image
 
 if is_torch_xla_available():
     import torch_xla.core.xla_model as xm
@@ -604,8 +591,8 @@ class RegionalFluxControlNetPipeline(FluxControlNetPipeline):
                     txt_ids=text_ids,
                     img_ids=latent_image_ids,
                     joint_attention_kwargs={
-                        'single_inject_blocks': joint_attention_kwargs['single_inject_blocks'] if 'single_inject_blocks' in joint_attention_kwargs else len(self.transformer.single_transformer_blocks), 
-                        'double_inject_blocks': joint_attention_kwargs['double_inject_blocks'] if 'double_inject_blocks' in joint_attention_kwargs else len(self.transformer.transformer_blocks),
+                        'single_inject_blocks_interval': joint_attention_kwargs['single_inject_blocks_interval'] if 'single_inject_blocks_interval' in joint_attention_kwargs else len(self.transformer.single_transformer_blocks), 
+                        'double_inject_blocks_interval': joint_attention_kwargs['double_inject_blocks_interval'] if 'double_inject_blocks_interval' in joint_attention_kwargs else len(self.transformer.transformer_blocks),
                         'regional_attention_mask': regional_attention_mask if base_ratio is not None else None,
                     },
                     return_dict=False,
