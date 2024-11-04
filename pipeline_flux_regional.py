@@ -388,7 +388,7 @@ class RegionalFluxPipeline(FluxPipeline):
         ## prepare masks for regional control
         conds = []
         masks = []
-        H, W = height//self.vae_scale_factor, width//self.vae_scale_factor
+        H, W = height//(self.vae_scale_factor), width//(self.vae_scale_factor)
         hidden_seq_len = H * W
         for mask, cond in regional_inputs:
             if mask is not None: # resize regional masks to image size, the flatten is to match the seq len

@@ -1,7 +1,3 @@
-import os
-import json
-import numpy as np
-from PIL import Image
 import torch
 from pipeline_flux_regional import RegionalFluxPipeline, RegionalFluxAttnProcessor2_0
 from pipeline_flux_controlnet_regional import RegionalFluxControlNetPipeline
@@ -11,7 +7,7 @@ if __name__ == "__main__":
     
     model_path = "black-forest-labs/FLUX.1-dev"
     
-    use_lora = True
+    use_lora = False
     use_controlnet = False
 
     if use_controlnet: # takes up more gpu memory
@@ -38,25 +34,25 @@ if __name__ == "__main__":
     ## generation settings
     
     # example regional prompt and mask pairs
-    # image_width = 1280
-    # image_height = 768
-    # num_samples = 1
-    # num_inference_steps = 24
-    # guidance_scale = 3.5
-    # seed = 124
-    # base_prompt = "An ancient woman stands solemnly holding a blazing torch, while a fierce battle rages in the background, capturing both strength and tragedy in a historical war scene."
-    # background_prompt = "a photo"
-    # regional_prompt_mask_pairs = {
-    #     "0": {
-    #         "description": "A dignified woman in ancient robes stands in the foreground, her face illuminated by the torch she holds high. Her expression is one of determination and sorrow, her clothing and appearance reflecting the historical period. The torch casts dramatic shadows across her features, its flames dancing vibrantly against the darkness.",
-    #         "mask": [128, 128, 640, 768]
-    #     }
-    # }
-    ## region control settings
-    # mask_inject_steps = 10
-    # double_inject_blocks_interval = 1
-    # single_inject_blocks_interval = 1
-    # base_ratio = 0.3
+    image_width = 1280
+    image_height = 768
+    num_samples = 1
+    num_inference_steps = 24
+    guidance_scale = 3.5
+    seed = 124
+    base_prompt = "An ancient woman stands solemnly holding a blazing torch, while a fierce battle rages in the background, capturing both strength and tragedy in a historical war scene."
+    background_prompt = "a photo"
+    regional_prompt_mask_pairs = {
+        "0": {
+            "description": "A dignified woman in ancient robes stands in the foreground, her face illuminated by the torch she holds high. Her expression is one of determination and sorrow, her clothing and appearance reflecting the historical period. The torch casts dramatic shadows across her features, its flames dancing vibrantly against the darkness.",
+            "mask": [128, 128, 640, 768]
+        }
+    }
+    # region control settings
+    mask_inject_steps = 10
+    double_inject_blocks_interval = 1
+    single_inject_blocks_interval = 1
+    base_ratio = 0.3
 
     # example input with controlnet enabled
     # image_width = 1280
@@ -95,32 +91,32 @@ if __name__ == "__main__":
 
 
     # example input with lora enabled
-    image_width = 1280
-    image_height = 1280
-    num_samples = 1
-    num_inference_steps = 24
-    guidance_scale = 3.5
-    seed = 124
-    base_prompt = "Sketched style: A cute dinosaur playfully blowing tiny fire puffs over a cartoon city in a cheerful scene."
-    background_prompt = "white background"
-    regional_prompt_mask_pairs = {
-        "0": {
-            "description": "Sketched style: dinosaur with round eyes and a mischievous smile, puffing small flames over the city.",
-            "mask": [0, 0, 640, 1280]
-        },
-        "1": {
-            "description": "Sketched style: city with colorful buildings and tiny flames gently floating above, adding a playful touch.", 
-            "mask": [640, 0, 1280, 1280]
-        }
-    }
-    ## lora settings
-    if use_lora:
-        pipeline.fuse_lora(lora_scale=1.5)
-    ## region control settings
-    mask_inject_steps = 10
-    double_inject_blocks_interval = 1 # 18 for full blocks
-    single_inject_blocks_interval = 1 # 39 for full blocks
-    base_ratio = 0.1
+    # image_width = 1280
+    # image_height = 1280
+    # num_samples = 1
+    # num_inference_steps = 24
+    # guidance_scale = 3.5
+    # seed = 124
+    # base_prompt = "Sketched style: A cute dinosaur playfully blowing tiny fire puffs over a cartoon city in a cheerful scene."
+    # background_prompt = "white background"
+    # regional_prompt_mask_pairs = {
+    #     "0": {
+    #         "description": "Sketched style: dinosaur with round eyes and a mischievous smile, puffing small flames over the city.",
+    #         "mask": [0, 0, 640, 1280]
+    #     },
+    #     "1": {
+    #         "description": "Sketched style: city with colorful buildings and tiny flames gently floating above, adding a playful touch.", 
+    #         "mask": [640, 0, 1280, 1280]
+    #     }
+    # }
+    # ## lora settings
+    # if use_lora:
+    #     pipeline.fuse_lora(lora_scale=1.5)
+    # ## region control settings
+    # mask_inject_steps = 10
+    # double_inject_blocks_interval = 1 # 18 for full blocks
+    # single_inject_blocks_interval = 1 # 39 for full blocks
+    # base_ratio = 0.1
 
     ## prepare regional prompts and masks
     # ensure image width and height are divisible by the vae scale factor

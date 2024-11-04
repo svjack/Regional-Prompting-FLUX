@@ -1,13 +1,15 @@
 <div align="center">
-<h1>Regional</h1>
+<h1>Training-free Regional Prompting for Diffusion Transformers</h1>
 
-[**Anthony Chen**](https://atchen.com/) · [**Haofan Wang**](https://haofanwang.github.io/)
+[**Anthony Chen**](https://atchen.com/)<sup>1,2</sup> · [**Jianjin Xu**](#)<sup>3</sup> · [**Wenzhao Zheng**](#)<sup>4</sup> · [**Gaole Dai**](#)<sup>1</sup> · [**Yida Wang**](#)<sup>5</sup> · [**Renrui Zhang**](#)<sup>6</sup> · [**Haofan Wang**](https://haofanwang.github.io/)<sup>2</sup> · [**Shanghang Zhang**](#)<sup>1*</sup>
+
+<sup>1</sup>Peking University · <sup>2</sup>InstantX Team · <sup>3</sup>Carnegie Mellon University · <sup>4</sup>UC Berkeley · <sup>5</sup>Li Auto Inc. · <sup>6</sup>CUHK
 
 <a href='#'><img src='https://img.shields.io/badge/Technique-Report-red'></a>
 
 </div>
 
-Regional-Prompting-FLUX enables Diffusion Transformers (i.e., FLUX) with find-grained compositional text-to-image generation capability in a training-free manner. Empirically, we show that our method is highly effective and compatible with LoRA and ControlNet.
+Training-free Regional Prompting for Diffusion Transformers(Regional-Prompting-FLUX) enables Diffusion Transformers (i.e., FLUX) with find-grained compositional text-to-image generation capability in a training-free manner. Empirically, we show that our method is highly effective and compatible with LoRA and ControlNet.
 
 <!-- <img src='assets/pipe.png'> -->
 
@@ -15,15 +17,15 @@ Regional-Prompting-FLUX enables Diffusion Transformers (i.e., FLUX) with find-gr
 <img src='assets/demo_pipeline.png' width = 900 >
 </div>
 
-We inference at speed much faster than the RPG-based implementation, yet take up much less GPU memory.
+We inference at speed **much faster** than the [RPG-based](https://github.com/YangLing0818/RPG-DiffusionMaster) implementation, yet take up **less GPU memory**.
 
 <p align="center">
   <img src="assets/demo_speed.png" width = 400>
 </p>
 
 ## Release
-- [2024/04/03] 🔥 We release the code, feel free to try it out!
-- [2024/04/03] 🔥 We release the [technical report](#)!
+- [2024/11/05] 🔥 We release the code, feel free to try it out!
+- [2024/11/05] 🔥 We release the [technical report](#)!
 
 ## Demos
 
@@ -37,36 +39,6 @@ We inference at speed much faster than the RPG-based implementation, yet take up
   </tr>
   <tr>
     <td width="20%">
-      <img src="assets/demo_custom_0_layout.png" width="100%">
-      <br>
-      <small><i>Red: Dog region (assets/demo_custom_0_mask_0.png)<br>Green: Cat region (assets/demo_custom_0_mask_1.png)<br>Blue: Background</i></small>
-    </td>
-    <td width="40%">
-      <b>Base Prompt:</b><br>
-      "dog and cat sitting on lush green grass, in a sunny outdoor setting."
-      <br><br>
-      <b>Regional Prompts:</b>
-      <ul>
-        <li><b>Region 0:</b> "A friendly golden retriever with a luxurious golden coat, floppy ears, and warm expression sitting on vibrant green grass."</li>
-        <li><b>Region 1:</b> "A silver british shorthair cat with round face, plush coat, and copper eyes sitting regally"</li>
-        <li><b>Background:</b> "A sunny outdoor setting with lush green grass."</li>
-      </ul>
-      <b>Settings:</b>
-      <ul>
-        <li>Image Size: 1280x768</li>
-        <li>Seed: 124</li>
-        <li>Mask Inject Steps: 10</li>
-        <li>Double Inject Interval: 1</li>
-        <li>Single Inject Interval: 2</li>
-        <li>Base Ratio: 0.1</li>
-      </ul>
-    </td>
-    <td width="40%">
-      <img src="assets/demo_custom_0.jpg" width="100%">
-    </td>
-  </tr>
-  <tr>
-    <td width="20%">
       <img src="assets/demo_custom_1_layout.png" width="100%">
       <br>
       <small><i>Red: Cocktail region (xyxy: [450, 560, 960, 900])<br>Green: Table region (xyxy: [320, 900, 1280, 1280])<br>Blue: Background</i></small>
@@ -76,7 +48,7 @@ We inference at speed much faster than the RPG-based implementation, yet take up
       "A tropical cocktail on a wooden table at a beach during sunset."
       <br><br>
       <b>Background Prompt:</b><br>
-      "Beach with waves, white sand, and palm trees at sunset."
+      "A photo"
       <br><br>
       <b>Regional Prompts:</b>
       <ul>
@@ -133,13 +105,14 @@ We inference at speed much faster than the RPG-based implementation, yet take up
       <img src="assets/demo_custom_3_layout.png" width="100%">
       <br>
       <small><i>Red: Woman with torch region (xyxy: [128, 128, 640, 768])</i></small>
+      <br><small><i>Green: Background</i></small>
     </td>
     <td width="40%">
       <b>Base Prompt:</b><br>
       "An ancient woman stands solemnly holding a blazing torch, while a fierce battle rages in the background, capturing both strength and tragedy in a historical war scene."
       <br><br>
       <b>Background Prompt:</b><br>
-      "A chaotic battlefield stretches behind her, filled with clashing armies, flying arrows, and the clash of ancient weapons. Soldiers with shields and spears engage in combat, their silhouettes dramatic against the smoky sky. Banners and standards wave in the wind, while dust and debris fill the air from the ongoing conflict."
+      "A photo."
       <br><br>
       <b>Regional Prompts:</b>
       <ul>
@@ -157,6 +130,38 @@ We inference at speed much faster than the RPG-based implementation, yet take up
     </td>
     <td width="40%">
       <img src="assets/demo_custom_3.jpg" width="100%">
+    </td>
+  </tr>
+  <tr>
+    <td width="20%">
+      <img src="assets/demo_custom_0_layout.png" width="100%">
+      <br>
+      <small><i>Red: Dog region (assets/demo_custom_0_mask_0.png)<br>Green: Cat region (assets/demo_custom_0_mask_1.png)<br>Blue: Background</i></small>
+    </td>
+    <td width="40%">
+      <b>Base Prompt:</b><br>
+      "dog and cat sitting on lush green grass, in a sunny outdoor setting."
+      <br><br>
+      <b>Regional Prompts:</b>
+      <ul>
+        <li><b>Region 0:</b> "A friendly golden retriever with a luxurious golden coat, floppy ears, and warm expression sitting on vibrant green grass."</li>
+        <li><b>Region 1:</b> "A silver british shorthair cat with round face, plush coat, and copper eyes sitting regally"</li>
+        <li><b>Background:</b> "A sunny outdoor setting with lush green grass."</li>
+      </ul>
+      <b>Settings:</b>
+      <ul>
+        <li>Image Size: 1280x768</li>
+        <li>Seed: 124</li>
+        <li>Mask Inject Steps: 10</li>
+        <li>Double Inject Interval: 1</li>
+        <li>Single Inject Interval: 2</li>
+        <li>Base Ratio: 0.1</li>
+      </ul>
+    </td>
+    <td width="40%">
+      <img src="assets/demo_custom_0.jpg" width="100%">
+      <br>
+      <small><i>Note: Generation with segmention mask is a experimental function, the generated image is not perfectly constrained by the regions, we assume it is because the mask suffers from degradation during the downsampling process.</i></small>
     </td>
   </tr>
 </table>
@@ -217,7 +222,7 @@ We inference at speed much faster than the RPG-based implementation, yet take up
       "A cute cartoon-style UFO floating above a sunny city street, artistic style blends reality and illustration elements"
       <br><br>
       <b>Background Prompt:</b><br>
-      "A sunny city street"
+      "A photo"
       <br><br>
       <b>Regional Prompts:</b>
       <ul>
@@ -236,7 +241,6 @@ We inference at speed much faster than the RPG-based implementation, yet take up
       <ul>
         <li>Path: Shakker-Labs/FLUX.1-dev-LoRA-Vector-Journey</li>
         <li>Scale: 1.0</li>
-        <li>Trigger Words: "artistic style blends reality and illustration elements"</li>
       </ul>
     </td>
     <td width="40%">
@@ -281,7 +285,11 @@ We inference at speed much faster than the RPG-based implementation, yet take up
         <li>Double Inject Blocks Interval: 1</li>
         <li>Single Inject Blocks Interval: 2</li>
         <li>Base Ratio: 0.2</li>
+      </ul>
+      <b>ControlNet:</b>
+      <ul>
         <li>Control Mode: 2</li>
+        <li>ControlNet Conditioning Scale: 0.7</li>
       </ul>
     </td>
     <td width="40%">
@@ -314,7 +322,11 @@ We inference at speed much faster than the RPG-based implementation, yet take up
         <li>Double Inject Blocks Interval: 1</li>
         <li>Single Inject Blocks Interval: 2</li>
         <li>Base Ratio: 0.2</li>
+      </ul>
+      <b>ControlNet:</b>
+      <ul>
         <li>Control Mode: 4</li>
+        <li>ControlNet Conditioning Scale: 0.7</li>
       </ul>
     </td>
     <td width="40%">
@@ -324,20 +336,25 @@ We inference at speed much faster than the RPG-based implementation, yet take up
 </table>
 
 ## Installation
+We use previous commit from diffusers repo to ensure reproducibility, as we found new diffusers version may experience different results.
 ```
 # install diffusers locally
 git clone https://github.com/huggingface/diffusers.git
 cd diffusers
+
+# reset diffusers version to 0.31.dev, where we developed Regional-Prompting-FLUX on, different version may experience different results
+git reset --hard d13b0d63c0208f2c4c078c4261caf8bf587beb3b
 pip install -e ".[torch]"
 cd ..
 
 # install other dependencies
-pip install -U transformers
+pip install -U transformers sentencepiece protobuf PEFT
 
 # clone this repo
 git clone https://github.com/antonioo-c/Regional-Prompting-FLUX.git
 
 # replace file in diffusers
+cd Regional-Prompting-FLUX
 cp transformer_flux.py ../diffusers/src/diffusers/models/transformers/transformer_flux.py
 ```
 
@@ -348,7 +365,7 @@ See detailed example (including LoRAs and ControlNets) in [infer_flux_regional.p
 import torch
 from pipeline_flux_regional import RegionalFluxPipeline, RegionalFluxAttnProcessor2_0
 
-pipeline = RegionalFluxPipeline.from_pretrained(model_path, torch_dtype=torch.bfloat16).to("cuda")
+pipeline = RegionalFluxPipeline.from_pretrained("black-forest-labs/FLUX.1-dev", torch_dtype=torch.bfloat16).to("cuda")
 attn_procs = {}
 for name in pipeline.transformer.attn_processors.keys():
     if 'transformer_blocks' in name and name.endswith("attn.processor"):
@@ -357,23 +374,24 @@ for name in pipeline.transformer.attn_processors.keys():
         attn_procs[name] = pipeline.transformer.attn_processors[name]
 pipeline.transformer.set_attn_processor(attn_procs)
 
+## general settings
 image_width = 1280
 image_height = 768
 num_inference_steps = 24
 seed = 124
 base_prompt = "An ancient woman stands solemnly holding a blazing torch, while a fierce battle rages in the background, capturing both strength and tragedy in a historical war scene."
-background_prompt = "a photo"
+background_prompt = "a photo" # set by default, but if you want to enrich background, you can set it to a more descriptive prompt
 regional_prompt_mask_pairs = {
     "0": {
         "description": "A dignified woman in ancient robes stands in the foreground, her face illuminated by the torch she holds high. Her expression is one of determination and sorrow, her clothing and appearance reflecting the historical period. The torch casts dramatic shadows across her features, its flames dancing vibrantly against the darkness.",
         "mask": [128, 128, 640, 768]
     }
 }
-# region control settings
-mask_inject_steps = 10
-double_inject_blocks_interval = 1
-single_inject_blocks_interval = 1
-base_ratio = 0.3
+## region control factor settings
+mask_inject_steps = 10 # larger means stronger control, recommended between 5-10
+double_inject_blocks_interval = 1 # 1 means strongest control
+single_inject_blocks_interval = 1 # 1 means strongest control
+base_ratio = 0.2 # smaller means stronger control
 
 regional_prompts = []
 regional_masks = []
@@ -398,18 +416,23 @@ image = pipeline(
     mask_inject_steps=mask_inject_steps,
     num_inference_steps=num_inference_steps,
     generator=torch.Generator("cuda").manual_seed(seed),
-    joint_attention_kwargs=joint_attention_kwargs,
+    joint_attention_kwargs={
+        "regional_prompts": regional_prompts,
+        "regional_masks": regional_masks,
+        "double_inject_blocks_interval": double_inject_blocks_interval,
+        "single_inject_blocks_interval": single_inject_blocks_interval,
+        "base_ratio": base_ratio
+    },
   ).images[0]
 
 image.save(f"output.jpg")
-
 ```
 
 ## Cite
 If you find Regional-Prompting-FLUX useful for your research and applications, please cite us using this BibTeX:
 
 ```bibtex
-HAHA
+TO BE UPDATED
 ```
 
 For any question, feel free to contact us via antonchen@pku.edu.cn.
