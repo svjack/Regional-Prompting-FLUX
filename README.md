@@ -5,7 +5,7 @@
 
 <sup>1</sup>Peking University · <sup>2</sup>InstantX Team · <sup>3</sup>Carnegie Mellon University · <sup>4</sup>UC Berkeley · <sup>5</sup>Li Auto Inc. · <sup>6</sup>CUHK
 
-<a href='#'><img src='https://img.shields.io/badge/Technique-Report-red'></a>
+<a href='https://arxiv.org/abs/2411.02395'><img src='https://img.shields.io/badge/Technique-Report-red'></a>
 
 </div>
 
@@ -432,7 +432,15 @@ image.save(f"output.jpg")
 If you find Regional-Prompting-FLUX useful for your research and applications, please cite us using this BibTeX:
 
 ```bibtex
-TO BE UPDATED
+@misc{chen2024trainingfreeregionalpromptingdiffusion,
+      title={Training-free Regional Prompting for Diffusion Transformers}, 
+      author={Anthony Chen and Jianjin Xu and Wenzhao Zheng and Gaole Dai and Yida Wang and Renrui Zhang and Haofan Wang and Shanghang Zhang},
+      year={2024},
+      eprint={2411.02395},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2411.02395}, 
+}
 ```
 
 For any question, feel free to contact us via antonchen@pku.edu.cn.
