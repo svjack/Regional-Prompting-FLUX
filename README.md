@@ -428,6 +428,9 @@ image = pipeline(
 image.save(f"output.jpg")
 ```
 
+## 👏 Acknowledgment
+Our work is sponsored by [HuggingFace](https://huggingface.co) and [fal.ai](https://fal.ai). Thanks!
+
 ## Cite
 If you find Regional-Prompting-FLUX useful for your research and applications, please cite us using this BibTeX:
 
