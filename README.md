@@ -25,7 +25,7 @@ We inference at speed **much faster** than the [RPG-based](https://github.com/Ya
 
 ## Release
 - [2024/11/05] 🔥 We release the code, feel free to try it out!
-- [2024/11/05] 🔥 We release the [technical report](#)!
+- [2024/11/05] 🔥 We release the [technical report](https://arxiv.org/abs/2411.02395)!
 
 ## Demos
 
@@ -38,7 +38,7 @@ We inference at speed **much faster** than the [RPG-based](https://github.com/Ya
     <th>Generated Result</th>
   </tr>
   <tr>
-    <td width="20%">
+    <td width="10%">
       <img src="assets/demo_custom_1_layout.png" width="100%">
       <br>
       <small><i>Red: Cocktail region (xyxy: [450, 560, 960, 900])<br>Green: Table region (xyxy: [320, 900, 1280, 1280])<br>Blue: Background</i></small>
@@ -65,12 +65,12 @@ We inference at speed **much faster** than the [RPG-based](https://github.com/Ya
         <li>Base Ratio: 0.1</li>
       </ul>
     </td>
-    <td width="40%">
+    <td width="50%">
       <img src="assets/demo_custom_1.jpg" width="100%">
     </td>
   </tr>
   <tr>
-    <td width="20%">
+    <td width="10%">
       <img src="assets/demo_custom_2_layout.png" width="100%">
       <br>
       <small><i>Red: Rainbow region (xyxy: [0, 0, 1280, 256])<br>Green: Ship region (xyxy: [0, 256, 1280, 520])<br>Yellow: Fish region (xyxy: [0, 520, 640, 768])<br>Blue: Treasure region (xyxy: [640, 520, 1280, 768])</i></small>
@@ -96,12 +96,12 @@ We inference at speed **much faster** than the [RPG-based](https://github.com/Ya
         <li>Base Ratio: 0.2</li>
       </ul>
     </td>
-    <td width="40%">
+    <td width="50%">
       <img src="assets/demo_custom_2.jpg" width="100%">
     </td>
   </tr>
   <tr>
-    <td width="20%">
+    <td width="10%">
       <img src="assets/demo_custom_3_layout.png" width="100%">
       <br>
       <small><i>Red: Woman with torch region (xyxy: [128, 128, 640, 768])</i></small>
@@ -128,12 +128,12 @@ We inference at speed **much faster** than the [RPG-based](https://github.com/Ya
         <li>Base Ratio: 0.3</li>
       </ul>
     </td>
-    <td width="40%">
+    <td width="50%">
       <img src="assets/demo_custom_3.jpg" width="100%">
     </td>
   </tr>
   <tr>
-    <td width="20%">
+    <td width="10%">
       <img src="assets/demo_custom_0_layout.png" width="100%">
       <br>
       <small><i>Red: Dog region (assets/demo_custom_0_mask_0.png)<br>Green: Cat region (assets/demo_custom_0_mask_1.png)<br>Blue: Background</i></small>
@@ -142,11 +142,13 @@ We inference at speed **much faster** than the [RPG-based](https://github.com/Ya
       <b>Base Prompt:</b><br>
       "dog and cat sitting on lush green grass, in a sunny outdoor setting."
       <br><br>
+      <b>Background Prompt:</b><br>
+      "A photo"
+      <br><br>
       <b>Regional Prompts:</b>
       <ul>
         <li><b>Region 0:</b> "A friendly golden retriever with a luxurious golden coat, floppy ears, and warm expression sitting on vibrant green grass."</li>
-        <li><b>Region 1:</b> "A silver british shorthair cat with round face, plush coat, and copper eyes sitting regally"</li>
-        <li><b>Background:</b> "A sunny outdoor setting with lush green grass."</li>
+        <li><b>Region 1:</b> "A golden british shorthair cat with round face, plush coat, and copper eyes sitting regally"</li>
       </ul>
       <b>Settings:</b>
       <ul>
@@ -158,7 +160,7 @@ We inference at speed **much faster** than the [RPG-based](https://github.com/Ya
         <li>Base Ratio: 0.1</li>
       </ul>
     </td>
-    <td width="40%">
+    <td width="50%">
       <img src="assets/demo_custom_0.jpg" width="100%">
       <br>
       <small><i>Note: Generation with segmention mask is a experimental function, the generated image is not perfectly constrained by the regions, we assume it is because the mask suffers from degradation during the downsampling process.</i></small>
@@ -168,7 +170,6 @@ We inference at speed **much faster** than the [RPG-based](https://github.com/Ya
 
 ### LoRA Compatability
 
-<table>
 <table align="center">
   <tr>
     <th>Regional Masks</th>
