@@ -436,14 +436,11 @@ Our work is sponsored by [HuggingFace](https://huggingface.co) and [fal.ai](http
 If you find Regional-Prompting-FLUX useful for your research and applications, please cite us using this BibTeX:
 
 ```bibtex
-@misc{chen2024trainingfreeregionalpromptingdiffusion,
-      title={Training-free Regional Prompting for Diffusion Transformers}, 
-      author={Anthony Chen and Jianjin Xu and Wenzhao Zheng and Gaole Dai and Yida Wang and Renrui Zhang and Haofan Wang and Shanghang Zhang},
-      year={2024},
-      eprint={2411.02395},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV},
-      url={https://arxiv.org/abs/2411.02395}, 
+@article{chen2024training,
+  title={Training-free Regional Prompting for Diffusion Transformers},
+  author={Chen, Anthony and Xu, Jianjin and Zheng, Wenzhao and Dai, Gaole and Wang, Yida and Zhang, Renrui and Wang, Haofan and Zhang, Shanghang},
+  journal={arXiv preprint arXiv:2411.02395},
+  year={2024}
 }
 ```
 
