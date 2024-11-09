@@ -54,6 +54,8 @@ huggingface-cli login
 # Regional Flux Pipeline README
 # Take Genshin Imapct Character named with shenhe as a Example 
 
+![shenhe (1)](https://github.com/user-attachments/assets/77be3f24-0f38-4b05-8d6a-e36a36bbb085)
+
 ![shenhe](https://github.com/user-attachments/assets/34159126-3058-4078-a101-fdb22839d1f0)
 
 ## Model Source
