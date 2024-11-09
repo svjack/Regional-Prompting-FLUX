@@ -43,7 +43,7 @@ cd ..
 pip install -U transformers sentencepiece protobuf PEFT
 
 # clone this repo
-git clone https://github.com/antonioo-c/Regional-Prompting-FLUX.git
+git clone https://github.com/svjack/Regional-Prompting-FLUX
 
 # replace file in diffusers
 cd Regional-Prompting-FLUX
