@@ -56,6 +56,22 @@ huggingface-cli login
 
 ![shenhe](https://github.com/user-attachments/assets/34159126-3058-4078-a101-fdb22839d1f0)
 
+## Model Source
+
+The LoRA model used in this project is sourced from:
+
+[TJ Flux Shenhe on CivitAI](https://civitai.com/models/866465/tj-flux-shenhe?modelVersionId=969578)
+
+## Regional Flux Pipeline
+
+The Regional Flux Pipeline utilized in this project is available at:
+
+[Regional Prompting FLUX on GitHub](https://github.com/instantX-research/Regional-Prompting-FLUX)
+
+## Acknowledgments
+
+We would like to express our sincere gratitude to the creators and contributors of the LoRA model and the Regional Flux Pipeline for their valuable work and resources.
+
 
 This README provides a guide on how to use the Regional Flux Pipeline, a powerful tool for generating images with regional control using PyTorch. The pipeline allows you to specify different prompts for different regions of the image, enabling fine-grained control over the generated content.
 
