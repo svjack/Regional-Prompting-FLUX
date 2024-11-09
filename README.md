@@ -70,7 +70,7 @@ import torch
 from pipeline_flux_regional import RegionalFluxPipeline, RegionalFluxAttnProcessor2_0
 
 pipeline = RegionalFluxPipeline.from_pretrained("black-forest-labs/FLUX.1-dev", torch_dtype=torch.bfloat16)
-pipeline.load_lora_weights("tj_f1_shenhe_v1.safetensors")
+pipeline.load_lora_weights("svjack/FLUX_Shenhe_Lora" ,"tj_f1_shenhe_v1.safetensors")
 pipeline.to("cuda")
 ```
 
