@@ -23,6 +23,216 @@ We inference at speed **much faster** than the [RPG-based](https://github.com/Ya
   <img src="assets/demo_speed.png" width = 400>
 </p>
 
+## Installation
+We use previous commit from diffusers repo to ensure reproducibility, as we found new diffusers version may experience different results.
+```bash
+sudo apt-get update && sudo apt-get install git-lfs ffmpeg cbm
+```
+
+```
+# install diffusers locally
+git clone https://github.com/huggingface/diffusers.git
+cd diffusers
+
+# reset diffusers version to 0.31.dev, where we developed Regional-Prompting-FLUX on, different version may experience different results
+git reset --hard d13b0d63c0208f2c4c078c4261caf8bf587beb3b
+pip install -e ".[torch]"
+cd ..
+
+# install other dependencies
+pip install -U transformers sentencepiece protobuf PEFT
+
+# clone this repo
+git clone https://github.com/antonioo-c/Regional-Prompting-FLUX.git
+
+# replace file in diffusers
+cd Regional-Prompting-FLUX
+cp transformer_flux.py ../diffusers/src/diffusers/models/transformers/transformer_flux.py
+huggingface-cli login
+```
+
+# Regional Flux Pipeline README
+# Take Genshin Imapct Character named with shenhe as a Example 
+
+![shenhe](https://github.com/user-attachments/assets/34159126-3058-4078-a101-fdb22839d1f0)
+
+
+This README provides a guide on how to use the Regional Flux Pipeline, a powerful tool for generating images with regional control using PyTorch. The pipeline allows you to specify different prompts for different regions of the image, enabling fine-grained control over the generated content.
+
+## Usage
+
+### Step 1: Load the Pipeline
+
+First, load the Regional Flux Pipeline from a pretrained model and set the desired data type:
+
+```python
+import torch
+from pipeline_flux_regional import RegionalFluxPipeline, RegionalFluxAttnProcessor2_0
+
+pipeline = RegionalFluxPipeline.from_pretrained("black-forest-labs/FLUX.1-dev", torch_dtype=torch.bfloat16)
+pipeline.load_lora_weights("tj_f1_shenhe_v1.safetensors")
+pipeline.to("cuda")
+```
+
+### Step 2: Configure Attention Processors
+
+Next, configure the attention processors to use the `RegionalFluxAttnProcessor2_0` for specific attention layers:
+
+```python
+attn_procs = {}
+for name in pipeline.transformer.attn_processors.keys():
+    if 'transformer_blocks' in name and name.endswith("attn.processor"):
+        attn_procs[name] = RegionalFluxAttnProcessor2_0()
+    else:
+        attn_procs[name] = pipeline.transformer.attn_processors[name]
+pipeline.transformer.set_attn_processor(attn_procs)
+```
+
+### Step 3: Set General Settings
+
+Define the general settings for the image generation:
+
+```python
+image_width = 1280
+image_height = 768
+num_inference_steps = 24
+seed = 124
+
+base_prompt = "A snowy chinese hill in the background, A big sun rises."
+background_prompt = "a photo of a snowy chinese hill"
+```
+
+### Step 4: Define Regional Prompts and Masks
+
+Specify the regional prompts and corresponding masks for different parts of the image:
+
+```python
+regional_prompt_mask_pairs = {
+    "0": {
+        "description": "A dignified woman stands in the foreground, her sliver hair and long braid adorned with a hair ornament, her face illuminated by the cold light of the snow. Her expression is one of determination and sorrow, her clothing and appearance reflecting the historical period. The snow casts a serene yet dramatic light across her features, its cold embrace enveloping her in a world of ice and frost. tj_sthenhe, hair ornament, sliver hair, long hair, braid.",
+        "mask": [128, 128, 640, 768]
+    }
+}
+```
+
+### Step 5: Configure Region Control Factors
+
+Set the control factors for region-specific attention injection:
+
+```python
+mask_inject_steps = 10
+double_inject_blocks_interval = 1
+single_inject_blocks_interval = 1
+base_ratio = 0.2
+```
+
+### Step 6: Generate the Image
+
+Generate the image using the specified prompts and masks:
+
+```python
+regional_prompts = []
+regional_masks = []
+background_mask = torch.ones((image_height, image_width))
+
+for region_idx, region in regional_prompt_mask_pairs.items():
+    description = region['description']
+    mask = region['mask']
+    x1, y1, x2, y2 = mask
+    mask = torch.zeros((image_height, image_width))
+    mask[y1:y2, x1:x2] = 1.0
+    background_mask -= mask
+    regional_prompts.append(description)
+    regional_masks.append(mask)
+
+if background_mask.sum() > 0:
+    regional_prompts.append(background_prompt)
+    regional_masks.append(background_mask)
+
+image = pipeline(
+    prompt=base_prompt,
+    width=image_width, height=image_height,
+    mask_inject_steps=mask_inject_steps,
+    num_inference_steps=num_inference_steps,
+    generator=torch.Generator("cuda").manual_seed(seed),
+    joint_attention_kwargs={
+        "regional_prompts": regional_prompts,
+        "regional_masks": regional_masks,
+        "double_inject_blocks_interval": double_inject_blocks_interval,
+        "single_inject_blocks_interval": single_inject_blocks_interval,
+        "base_ratio": base_ratio
+    },
+).images[0]
+
+image.save(f"shenhe_in_snow_hill.jpg")
+```
+### Step 7: Display the Image
+
+Display the generated image:
+
+```python
+from IPython import display
+display.Image("shenhe_in_snow_hill.jpg", width=512, height=512)
+```
+
+![shenhe_in_snow_hill](https://github.com/user-attachments/assets/8edfb639-a624-4218-845d-b8579b41c62a)
+
+### Step 8: Draw a Transparent Rectangle
+
+Optionally, draw a transparent rectangle on the generated image to highlight a specific region:
+
+```python
+from PIL import Image, ImageDraw
+
+def draw_transparent_rectangle(image_path, bbox, color, alpha=128, output_path=None):
+    """
+    在指定区域绘制一个半透明的矩形，并将修改后的图片保存到本地新路径。
+
+    :param image_path: 图片路径
+    :param bbox: 长度为4的列表，表示矩形的边界框 [x1, y1, x2, y2]
+    :param color: 颜色，格式为 (R, G, B)
+    :param alpha: 透明度，范围为 0（完全透明）到 255（完全不透明），默认值为 128
+    :param output_path: 保存修改后图片的路径，如果为 None，则覆盖原图
+    :return: 修改后的图片对象
+    """
+    image = Image.open(image_path).convert("RGBA")
+    overlay = Image.new('RGBA', image.size, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(overlay)
+
+    x1, y1, x2, y2 = bbox
+    draw.rectangle([x1, y1, x2, y2], fill=(*color, alpha))
+
+    image = Image.alpha_composite(image, overlay)
+
+    if output_path is None:
+        output_path = image_path
+
+    image.save(output_path)
+    return image
+
+draw_transparent_rectangle("shenhe_in_snow_hill.jpg", [128, 128, 640, 768], (255, 0, 0), alpha=128, output_path="shenhe_in_snow_hill_rec.png")
+display.Image("shenhe_in_snow_hill_rec.png", width=512, height=512)
+```
+
+![shenhe_in_snow_hill_rec](https://github.com/user-attachments/assets/64914e05-6cc5-4905-92e1-8ad112561e28)
+
+
+### 以下是对应提示词的中文翻译：
+
+- `base_prompt`: "背景是雪中的中国山丘，一轮大太阳正在升起。"
+- `background_prompt`: "一张雪中的中国山丘的照片"
+
+`regional_prompt_mask_pairs` 中的内容翻译如下：
+
+```json
+{
+    "0": {
+        "description": "一位端庄的女子站在前景中，她的银发和长辫子上装饰着发饰，她的脸被雪的冷光照亮。她的表情既坚定又悲伤，她的服装和外貌反映了历史时期。雪花在她脸上投下宁静而戏剧性的光线，它的寒冷拥抱将她包裹在冰雪世界中。tj_sthenhe，发饰，银发，长发，辫子。",
+        "mask": [128, 128, 640, 768]
+    }
+}
+```
+
 ## Release
 - [2024/11/05] 🔥 We release the code, feel free to try it out!
 - [2024/11/05] 🔥 We release the [technical report](https://arxiv.org/abs/2411.02395)!
@@ -335,34 +545,6 @@ We inference at speed **much faster** than the [RPG-based](https://github.com/Ya
     </td>
   </tr>
 </table>
-
-## Installation
-We use previous commit from diffusers repo to ensure reproducibility, as we found new diffusers version may experience different results.
-```bash
-sudo apt-get update && sudo apt-get install git-lfs ffmpeg cbm
-```
-
-```
-# install diffusers locally
-git clone https://github.com/huggingface/diffusers.git
-cd diffusers
-
-# reset diffusers version to 0.31.dev, where we developed Regional-Prompting-FLUX on, different version may experience different results
-git reset --hard d13b0d63c0208f2c4c078c4261caf8bf587beb3b
-pip install -e ".[torch]"
-cd ..
-
-# install other dependencies
-pip install -U transformers sentencepiece protobuf PEFT
-
-# clone this repo
-git clone https://github.com/antonioo-c/Regional-Prompting-FLUX.git
-
-# replace file in diffusers
-cd Regional-Prompting-FLUX
-cp transformer_flux.py ../diffusers/src/diffusers/models/transformers/transformer_flux.py
-huggingface-cli login
-```
 
 ## Quick Start
 See detailed example (including LoRAs and ControlNets) in [infer_flux_regional.py](infer_flux_regional.py). Below is a quick start example.
