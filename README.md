@@ -338,6 +338,10 @@ We inference at speed **much faster** than the [RPG-based](https://github.com/Ya
 
 ## Installation
 We use previous commit from diffusers repo to ensure reproducibility, as we found new diffusers version may experience different results.
+```bash
+sudo apt-get update && sudo apt-get install git-lfs ffmpeg cbm
+```
+
 ```
 # install diffusers locally
 git clone https://github.com/huggingface/diffusers.git
@@ -357,6 +361,7 @@ git clone https://github.com/antonioo-c/Regional-Prompting-FLUX.git
 # replace file in diffusers
 cd Regional-Prompting-FLUX
 cp transformer_flux.py ../diffusers/src/diffusers/models/transformers/transformer_flux.py
+huggingface-cli login
 ```
 
 ## Quick Start
